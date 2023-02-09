@@ -24,6 +24,15 @@ app.get('/contracts/:id',getProfile ,async (req, res) =>{
     res.json(contract)
 })
 
+app.get('/contracts/:id' ,async (req, res,next) =>{
+    const {Contract} = req.app.get('models')
+    const {id} = req.params
+    const contract = await Contract.findOne({where: {id}})
+    if(!contract) return res.status(404).end()
+    req.profile_id = contract.ClientId
+    next();
+},getProfile)
+
 app.get('/contracts',getContracts )
 
 app.get('/jobs/unpaid',getUnpaidJobs)
